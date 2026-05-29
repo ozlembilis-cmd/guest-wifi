@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>AutoJoin</key>
+            <true/>
+            <key>EncryptionType</key>
+            <string>WPA</string>
+            <key>HIDDEN_NETWORK</key>
+            <false/>
+            <key>Password</key>
+            <string>Welcome@IGuest</string>
+            <key>PayloadDescription</key>
+            <string>Configures Wi-Fi settings</string>
+            <key>PayloadDisplayName</key>
+            <string>Wi-Fi (AI Guest)</string>
+            <key>PayloadIdentifier</key>
+            <string>com.office.guestwifi.wifi.45a7df20-954d-46ca-8334-0d66fe7be8f6</string>
+            <key>PayloadType</key>
+            <string>com.apple.wifi.managed</string>
+            <key>PayloadUUID</key>
+            <string>45a7df20-954d-46ca-8334-0d66fe7be8f6</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>SSID_STR</key>
+            <string>AI Guest</string>
+        </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>Connects your iPhone to the AI Guest Wi-Fi network.</string>
+    <key>PayloadDisplayName</key>
+    <string>AI Guest Wi-Fi</string>
+    <key>PayloadIdentifier</key>
+    <string>com.office.guestwifi.a5a5cae9-98dd-4d34-bdc4-cae69ac13ed7</string>
+    <key>PayloadOrganization</key>
+    <string>Guest Network</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>a5a5cae9-98dd-4d34-bdc4-cae69ac13ed7</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>

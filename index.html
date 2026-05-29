@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Join Guest Wi-Fi</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --card: #1a1d24;
+    --accent: #f5a623;
+    --accent-dark: #d98b0a;
+    --text: #f5f6f8;
+    --muted: #9aa0aa;
+    --line: #2a2e37;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 32px 28px;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+  }
+  .wifi-icon {
+    width: 56px; height: 56px;
+    margin: 0 auto 18px;
+    display: block;
+  }
+  h1 { font-size: 22px; margin-bottom: 6px; }
+  .net {
+    font-size: 15px; color: var(--accent);
+    font-weight: 600; margin-bottom: 24px;
+  }
+  .platform-label {
+    font-size: 13px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .08em;
+    margin-bottom: 14px;
+  }
+  .btn {
+    display: block; width: 100%;
+    background: var(--accent); color: #1a1207;
+    font-size: 17px; font-weight: 700;
+    border: none; border-radius: 14px;
+    padding: 16px; margin-bottom: 12px;
+    text-decoration: none; cursor: pointer;
+    transition: background .15s;
+  }
+  .btn:active { background: var(--accent-dark); }
+  .creds {
+    background: #12141a; border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px;
+    text-align: left; margin-top: 8px;
+  }
+  .creds .row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
+  .creds .k { color: var(--muted); font-size: 13px; }
+  .creds .v { font-weight: 600; font-size: 15px; font-family: ui-monospace, Menlo, monospace; }
+  .qr-wrap { margin-top: 20px; }
+  .qr-wrap img { width: 180px; height: 180px; border-radius: 12px; background:#fff; padding:10px; }
+  .hint { font-size: 13px; color: var(--muted); margin-top: 14px; line-height: 1.5; }
+  .copy-btn {
+    background: none; border: 1px solid var(--line); color: var(--accent);
+    border-radius: 8px; padding: 5px 10px; font-size: 12px; cursor: pointer;
+  }
+  .copy-btn:active { background: var(--line); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <svg class="wifi-icon" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+      <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+      <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+      <line x1="12" y1="20" x2="12.01" y2="20"></line>
+    </svg>
+    <h1>Join the Wi-Fi</h1>
+    <div class="net" id="netName">AI Guest</div>
+
+    <div id="platformArea"></div>
+
+    <div class="creds">
+      <div class="row">
+        <span class="k">Network</span>
+        <span class="v" id="ssidVal">AI Guest</span>
+      </div>
+      <div class="row">
+        <span class="k">Password</span>
+        <span class="v"><span id="passVal">Welcome@IGuest</span> <button class="copy-btn" onclick="copyPass()">Copy</button></span>
+      </div>
+    </div>
+
+    <div class="hint" id="hint"></div>
+  </div>
+
+<script>
+  // ---- CONFIG ----
+  var SSID = "AI Guest";
+  var PASSWORD = "Welcome@IGuest";
+  var PROFILE_URL = "wifi.mobileconfig"; // same folder as this page
+  // QR encodes standard Wi-Fi join string; camera apps join natively
+  var qrData = "WIFI:T:WPA;S:" + SSID + ";P:" + PASSWORD + ";;";
+  var QR_SRC = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=" + encodeURIComponent(qrData);
+
+  document.getElementById('ssidVal').textContent = SSID;
+  document.getElementById('passVal').textContent = PASSWORD;
+  document.getElementById('netName').textContent = SSID;
+
+  var ua = navigator.userAgent || "";
+  var isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isAndroid = /Android/.test(ua);
+  var area = document.getElementById('platformArea');
+  var hint = document.getElementById('hint');
+
+  if (isIOS) {
+    area.innerHTML =
+      '<div class="platform-label">iPhone detected</div>' +
+      '<a class="btn" href="' + PROFILE_URL + '">Install &amp; Join</a>';
+    hint.innerHTML = 'Tap <b>Install &amp; Join</b>, then open <b>Settings</b> when prompted and tap <b>Install</b> to connect. ' +
+                     'iOS requires this confirmation for any network change.';
+  } else if (isAndroid) {
+    area.innerHTML =
+      '<div class="platform-label">Android detected</div>' +
+      '<div class="qr-wrap"><img alt="Wi-Fi QR" src="' + QR_SRC + '"></div>';
+    hint.innerHTML = 'Point your <b>Camera</b> at the code above and tap <b>Join network</b>. ' +
+                     'Or just use the network name and password below.';
+  } else {
+    area.innerHTML =
+      '<div class="platform-label">Scan to join</div>' +
+      '<div class="qr-wrap"><img alt="Wi-Fi QR" src="' + QR_SRC + '"></div>';
+    hint.innerHTML = 'Scan with your phone camera, or enter the details below manually.';
+  }
+
+  function copyPass() {
+    navigator.clipboard && navigator.clipboard.writeText(PASSWORD);
+    var b = event.target; var t = b.textContent; b.textContent = "Copied"; setTimeout(function(){ b.textContent = t; }, 1200);
+  }
+</script>
+</body>
+</html>
