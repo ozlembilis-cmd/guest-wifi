@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Aspire Guest Wi-Fi</title>
+<style>
+  :root {
+    --bg:#0f1115; --card:#1a1d24; --accent:#f5a623; --accent-dark:#d98b0a;
+    --text:#f5f6f8; --muted:#a7adb8; --line:#2a2e37; --success:#7ee081;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(circle at top,#202431 0,#0f1115 46%);
+    color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .card { background:rgba(26,29,36,.96); border:1px solid var(--line); border-radius:24px; padding:30px 24px; width:100%; max-width:420px; text-align:center; box-shadow:0 18px 50px rgba(0,0,0,.35); }
+  .badge { display:inline-block; color:var(--accent); border:1px solid rgba(245,166,35,.35); border-radius:999px; padding:7px 12px; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-bottom:18px; }
+  svg { width:58px; height:58px; margin:0 auto 18px; display:block; }
+  h1 { font-size:25px; line-height:1.15; margin-bottom:8px; }
+  .sub { color:var(--muted); font-size:15px; line-height:1.45; margin-bottom:22px; }
+  .creds { background:#12141a; border:1px solid var(--line); border-radius:16px; padding:16px; text-align:left; margin:18px 0 14px; }
+  .row { display:flex; justify-content:space-between; gap:16px; align-items:center; padding:8px 0; }
+  .k { color:var(--muted); font-size:13px; }
+  .v { font-weight:700; font-size:16px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; text-align:right; }
+  .btn { display:block; width:100%; background:var(--accent); color:#1a1207; font-size:17px; font-weight:800; border:0; border-radius:15px; padding:16px; margin:12px 0; text-decoration:none; cursor:pointer; }
+  .btn:active { background:var(--accent-dark); }
+  .btn.secondary { background:transparent; color:var(--accent); border:1px solid var(--line); }
+  .steps { text-align:left; color:var(--muted); font-size:14px; line-height:1.55; margin-top:15px; }
+  .steps b { color:var(--text); }
+  .qr-wrap { display:none; margin-top:20px; }
+  .qr-wrap img { width:172px; height:172px; background:#fff; padding:10px; border-radius:14px; }
+  .toast { min-height:22px; color:var(--success); font-size:13px; font-weight:700; margin-top:8px; }
+  .small { color:var(--muted); font-size:12px; line-height:1.45; margin-top:16px; }
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="badge">Guest Wi‑Fi</div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line>
+    </svg>
+    <h1>Join AI Guest</h1>
+    <p class="sub" id="intro">Tap copy, then choose the network on your phone.</p>
+
+    <button class="btn" onclick="copyPassword()">Copy Wi‑Fi Password</button>
+    <div class="toast" id="toast"></div>
+
+    <section class="creds" aria-label="Wi-Fi details">
+      <div class="row"><span class="k">Network</span><span class="v">AI Guest</span></div>
+      <div class="row"><span class="k">Password</span><span class="v" id="passwordText">Welcome@IGuest</span></div>
+    </section>
+
+    <div class="steps" id="steps"></div>
+
+    <div class="qr-wrap" id="qrWrap">
+      <img alt="Wi‑Fi QR code" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXIAAAFyAQAAAADAX2ykAAACi0lEQVR4nO2bTYrjMBCFX40EWcqQA+Qo8s2GHGluIB+lDxCQlgabN4uS0u6eHrqbSTwWVK1i+1sUFKqfV4oQ37Hpx7dwwHjjjTfeeOON/xsv1TwwiQdQPGQEIGNp38Yd/TH+wXwkSWYAkbOIXGYBigcAR5LkW/7Z/hj/YL7UE6qHOL54AFiF6f5uX3+MfxIfsyOvA8DrAMj4v/0x/p94//7FNDgg5vMiCDdPlH39Mf45fCCZACDmVQCsApSTVl2Sy97+GP9QfhIRkQEA4CgjHBEzICNWbZ/39cf4B/Gan7ciZZiFwNwCGt4KmEfz3/iv8G3M9eBVTsQ0AEBYoI219c+d87xeFh19gTCLjFp6VwE0U6+Wn/vksRUv4AjAkSksAEL9wBRYLR3Nf+M/sRq47IjIRXvlzWNC/aUSl8W3M77GN90fU6CeX6bAGtq7SGnx7ZXXhFwbKt0v/HwR0U7L6m+3fGuMy4kSf3kIws0Lws0DgRAAIIprAsfR/Df+E2v52VEbqpgBMrfGS6uu9Vd98zKGBUxFdCCSMVCHYCZUuVLGHf0x/lH85pi+tsm1EgOoQ1JYYOe3a76IML2qGsW3wbiIIGZn+/3OeUeVnq9yaue3+Haccd8EH9Z/4z+2lp+rlqG7wJjrJNwom3875Zt+1UyPbmxBroU5W3w75XX+beqFWwisdV2oS6RyXrb80fw3/kv8/f6kjHBspbdpWtNlNv2qT77V3wzUNrnl5239DbZf6JT/436d3nouZ4qm7ZDv2XsPf4zfhQ+zqKqR2rqhrpg68d/4d3y7P6mrX62/uWnSGznrqP4b/7HV/DxpDnaQGku3YBpuvhVg06865cX+32288cYbb7zxu/O/ATFrmW/xkkHcAAAAAElFTkSuQmCC" />
+      <p class="small">For someone scanning from another device.</p>
+    </div>
+
+    <button class="btn secondary" onclick="toggleQR()">Show QR Code</button>
+    <p class="small">No app download. No configuration profile. Your sticker still works because the network name and password are printed on it.</p>
+  </main>
+
+<script>
+  const SSID = 'AI Guest';
+  const PASSWORD = 'Welcome@IGuest';
+  const ua = navigator.userAgent || "";
+  const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/.test(ua);
+  const steps = document.getElementById('steps');
+  const intro = document.getElementById('intro');
+
+  if (isIOS) {
+    intro.textContent = 'No profile needed. Copy the password, then join from Wi‑Fi settings.';
+    steps.innerHTML = '<b>iPhone:</b><br>1. Tap <b>Copy Wi‑Fi Password</b><br>2. Open <b>Settings → Wi‑Fi</b><br>3. Choose <b>' + SSID + '</b><br>4. Paste the password and join';
+  } else if (isAndroid) {
+    intro.textContent = 'Copy the password, then choose the guest network.';
+    steps.innerHTML = '<b>Android:</b><br>1. Tap <b>Copy Wi‑Fi Password</b><br>2. Open <b>Wi‑Fi settings</b><br>3. Choose <b>' + SSID + '</b><br>4. Paste the password and join';
+  } else {
+    intro.textContent = 'Use the details below, or show the QR code for a phone to scan.';
+    steps.innerHTML = '<b>Network:</b> ' + SSID + '<br><b>Password:</b> ' + PASSWORD;
+    document.getElementById('qrWrap').style.display = 'block';
+  }
+
+  async function copyPassword() {
+    const toast = document.getElementById('toast');
+    try {
+      await navigator.clipboard.writeText(PASSWORD);
+      toast.textContent = 'Password copied';
+    } catch (e) {
+      toast.textContent = 'Select and copy the password shown below';
+    }
+    setTimeout(() => toast.textContent = '', 1800);
+  }
+
+  function toggleQR() {
+    const qr = document.getElementById('qrWrap');
+    qr.style.display = qr.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+</body>
+</html>
